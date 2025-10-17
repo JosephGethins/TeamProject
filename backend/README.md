@@ -25,7 +25,7 @@ npm run dev
 ### Authentication
 - `POST /auth/login` - Login with email/password
 - `POST /auth/verify` - Verify ID token
-
+To Do
 ### Users
 - `POST /users/profile` - Create user profile
 - `GET /users/profile` - Get user profile
