@@ -23,5 +23,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+package-lock.json
+package.json
 frontend/src/config/firebase.js
