@@ -73,80 +73,18 @@ export const userAPI = {
   })
 };
 
-// Quiz API
-export const quizAPI = {
-  getAll: (moduleId) => apiRequest(`/quizzes${moduleId ? `?moduleId=${moduleId}` : ''}`),
-  getById: (quizId) => apiRequest(`/quizzes/${quizId}`),
-  getForTaking: (quizId) => apiRequest(`/quizzes/${quizId}/take`),
-  getProblems: (quizId) => apiRequest(`/quizzes/${quizId}/problems`),
-  getProblem: (quizId, questionId) => apiRequest(`/quizzes/${quizId}/problems/${questionId}`),
-  submitAttempt: (quizId, answers) => apiRequest(`/quizzes/${quizId}/attempt`, {
-    method: 'POST',
-    body: JSON.stringify({ answers })
-  }),
-  getAttempts: (quizId) => apiRequest(`/quizzes/${quizId}/attempts`),
-  getAllAttempts: () => apiRequest('/quizzes/attempts/all'),
-  getHistory: (limit = 10) => apiRequest(`/quizzes/history?limit=${limit}`),
-  getResults: (attemptId) => apiRequest(`/quizzes/attempts/${attemptId}/results`)
-};
 
-// Analytics API
-export const analyticsAPI = {
-  getUser: () => apiRequest('/analytics/user'),
-  getMetrics: () => apiRequest('/analytics/metrics'),
-  getTrends: (period = 'week') => apiRequest(`/analytics/trends?period=${period}`),
-  getModule: (moduleId) => apiRequest(`/analytics/module/${moduleId}`),
-  getProgress: () => apiRequest('/analytics/user/progress'),
-  getModules: () => apiRequest('/analytics/user/modules')
-};
 
-// Timetable API
-export const timetableAPI = {
-  get: () => apiRequest('/timetable'),
-  update: (data) => apiRequest('/timetable', {
-    method: 'PUT',
-    body: JSON.stringify(data)
-  }),
-  addScheduleItem: (day, data) => apiRequest(`/timetable/schedule/${day}`, {
-    method: 'POST',
-    body: JSON.stringify(data)
-  }),
-  updateScheduleItem: (day, itemId, data) => apiRequest(`/timetable/schedule/${day}/${itemId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data)
-  }),
-  deleteScheduleItem: (day, itemId) => apiRequest(`/timetable/schedule/${day}/${itemId}`, {
-    method: 'DELETE'
-  }),
-  getPreferences: () => apiRequest('/timetable/preferences'),
-  updatePreferences: (data) => apiRequest('/timetable/preferences', {
-    method: 'PUT',
-    body: JSON.stringify(data)
-  }),
-  getUpcoming: (limit = 10) => apiRequest(`/timetable/upcoming?limit=${limit}`),
-  getSchedule: (day) => apiRequest(`/timetable/schedule/${day}`)
-};
 
-// Module API
-export const moduleAPI = {
-  getAll: () => apiRequest('/modules'),
-  getById: (moduleId) => apiRequest(`/modules/${moduleId}`),
-  getWithQuizzes: (moduleId) => apiRequest(`/modules/${moduleId}/quizzes`),
-  getProgress: (moduleId) => apiRequest(`/modules/${moduleId}/progress`)
-};
 
-// Dashboard API
-export const dashboardAPI = {
-  getData: () => apiRequest('/dashboard'),
-  getStats: () => apiRequest('/dashboard/stats')
-};
+
+ 
+
+
+
+
 
 export default {
   auth: authAPI,
   user: userAPI,
-  quiz: quizAPI,
-  analytics: analyticsAPI,
-  timetable: timetableAPI,
-  module: moduleAPI,
-  dashboard: dashboardAPI
 };

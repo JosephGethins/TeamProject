@@ -4,11 +4,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { authRouter } from './routes/authRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
-import { quizRouter } from './routes/quizRoutes.js';
-import { analyticsRouter } from './routes/analyticsRoutes.js';
-import { timetableRouter } from './routes/timetableRoutes.js';
-import { moduleRouter } from './routes/moduleRoutes.js';
-import { dashboardRouter } from './routes/dashboardRoutes.js';
+
 
 dotenv.config();
 
@@ -31,11 +27,7 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
-app.use('/quizzes', quizRouter);
-app.use('/analytics', analyticsRouter);
-app.use('/timetable', timetableRouter);
-app.use('/modules', moduleRouter);
-app.use('/dashboard', dashboardRouter);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
