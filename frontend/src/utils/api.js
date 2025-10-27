@@ -1,6 +1,7 @@
 import { getCurrentUserToken } from './auth';
+import { API_BASE } from '../config';
 
-const API_BASE_URL = 'http://localhost:4000';
+const API_BASE_URL = API_BASE || 'http://localhost:4000';
 
 // Helper function to get auth headers
 const getAuthHeaders = async () => {

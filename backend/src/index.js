@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { authRouter } from './routes/authRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
+import { timetableRouter } from './routes/timetableRoutes.js';
 
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
+app.use('/timetable', timetableRouter);
 
 
 // Error handling middleware
