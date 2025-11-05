@@ -13,14 +13,21 @@ const Navbar = () => {
     }
   };
 
+  const navStyle = {
+    background: 'linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))'
+  };
+
   if (!isAuthenticated) {
     return (
-      <nav className="bg-blue-600 text-white p-4">
+      <nav style={navStyle} className="text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-xl font-bold">
             Student Quiz Helper
           </Link>
-          <Link to="/login" className="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-100">
+          <Link 
+            to="/login" 
+            className="bg-white text-[var(--color-primary)] px-4 py-2 rounded hover:bg-gray-100 transition"
+          >
             Sign In
           </Link>
         </div>
@@ -29,25 +36,25 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-blue-600 text-white p-4">
+    <nav style={navStyle} className="text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
           Student Quiz Helper
         </Link>
         
         <div className="flex space-x-4 items-center">
-          <Link to="/" className="hover:text-blue-200">Home</Link>
-          <Link to="/profile" className="hover:text-blue-200">Profile</Link>
-          <Link to="/quiz" className="hover:text-blue-200">Quiz</Link>
-          <Link to="/edit-timetable" className="hover:text-blue-200">Timetable</Link>
-          <Link to="/data-metrics" className="hover:text-blue-200">Metrics</Link>
-          <Link to="/quiz-problem" className="hover:text-blue-200">Problems</Link>
+          <Link to="/" className="hover:text-white/70 transition">Home</Link>
+          <Link to="/profile" className="hover:text-white/70 transition">Profile</Link>
+          <Link to="/quiz" className="hover:text-white/70 transition">Quiz</Link>
+          <Link to="/edit-timetable" className="hover:text-white/70 transition">Timetable</Link>
+          <Link to="/data-metrics" className="hover:text-white/70 transition">Metrics</Link>
+          <Link to="/quiz-problem" className="hover:text-white/70 transition">Problems</Link>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 ml-4">
             <span className="text-sm">Welcome, {user?.displayName || user?.email}</span>
             <button 
               onClick={handleSignOut}
-              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm"
+              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm transition"
             >
               Sign Out
             </button>

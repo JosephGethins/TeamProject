@@ -1,0 +1,55 @@
+/* Default blue theme */
+:root {
+  --color-primary: #3b82f6;
+  --color-secondary: #0284c7;
+  --bg-gradient-start: #3b82f6;
+  --bg-gradient-end: #0ea5e9;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --card-bg: rgba(255,255,255,0.1);
+  --card-border: rgba(255,255,255,0.2);
+  --btn-text: #ffffff;
+  --accent: #0284c7;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --color-primary: #1e40af;
+  --color-secondary: #0c4a6e;
+  --bg-gradient-start: #111827;
+  --bg-gradient-end: #1e293b;
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --card-bg: rgba(17, 24, 39, 0.7);
+  --card-border: rgba(255,255,255,0.2);
+  --btn-text: #ffffff;
+  --accent: #3b82f6;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --color-primary: #2563eb;
+  --color-secondary: #93c5fd;
+  --bg-gradient-start: #dbeafe;
+  --bg-gradient-end: #93c5fd;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #2563eb;
+}
+
+/* Pink theme */
+[data-theme="pink"] {
+  --color-primary: #ec4899;
+  --color-secondary: #db2777;
+  --bg-gradient-start: #f472b6;
+  --bg-gradient-end: #e11d48;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #db2777;
+}

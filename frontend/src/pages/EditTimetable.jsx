@@ -45,7 +45,7 @@ const EditTimetable = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))' }}>
         <div className="text-white text-xl">Loading timetable...</div>
       </div>
     );
@@ -53,29 +53,32 @@ const EditTimetable = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))' }}>
         <div className="text-white text-xl">Please sign in to edit your timetable.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 py-10 px-6">
+    <div className="min-h-screen py-10 px-6" style={{ background: 'linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))' }}>
       <div className="max-w-6xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-6 text-white">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <h2 className="text-2xl md:text-3xl font-bold">Edit Timetable</h2>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setLocked((s) => !s)}
-              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-lg font-semibold shadow transition"
+              className="px-4 py-2 rounded-lg font-semibold shadow transition"
+              style={{ background: 'linear-gradient(to right, var(--primary-start), var(--primary-end))' }}
             >
               {locked ? 'Unlock' : 'Lock'}
             </button>
             <button
               onClick={() => setDeleteMode((s) => !s)}
-              className={`px-4 py-2 rounded-lg font-semibold shadow transition ${
-                deleteMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white/20 hover:bg-white/30'
-              }`}
+              className={`px-4 py-2 rounded-lg font-semibold shadow transition`}
+              style={{
+                background: deleteMode ? 'var(--error-bg)' : 'var(--secondary-bg)',
+                color: deleteMode ? 'var(--error-text)' : 'var(--secondary-text)'
+              }}
             >
               {deleteMode ? 'Delete mode: ON' : 'Delete mode: OFF'}
             </button>
@@ -83,12 +86,12 @@ const EditTimetable = () => {
         </div>
 
         {error && (
-          <div className="mb-4 bg-red-500/20 border border-red-400 rounded-lg p-3 text-red-200 text-sm">
+          <div className="mb-4 rounded-lg p-3 text-sm" style={{ backgroundColor: 'var(--error-bg)', color: 'var(--error-text)', border: '1px solid var(--error-border)' }}>
             Error: {error}
           </div>
         )}
 
-        <div className="bg-white/5 rounded-2xl p-4 overflow-x-auto">
+        <div className="rounded-2xl p-4 overflow-x-auto" style={{ backgroundColor: 'var(--card-bg)' }}>
           <Timetable items={items} onChange={handleChange} locked={locked} deleteMode={deleteMode} />
         </div>
       </div>
