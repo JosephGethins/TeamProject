@@ -1,6 +1,3 @@
-// Ive commented myself what ive done and used AI to comment what some functions do if its hard to understand
-// Contact me by email or by teams if theres issues but profile code shouldnt need to be changed
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { updateProfile, updateEmail, updatePassword } from "firebase/auth";
@@ -18,12 +15,10 @@ const Profile = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
 
-  // Populate state once user is ready
   useEffect(() => {
     if (user) {
       setDisplayName(user.displayName || "");
       setEmail(user.email || "");
-      // Use photoURL as seed if it exists and is a DiceBear URL, otherwise use uid
       if (user.photoURL && user.photoURL.includes('dicebear.com')) {
         const seedMatch = user.photoURL.match(/seed=([^&]+)/);
         setAvatarSeed(seedMatch ? seedMatch[1] : user.uid);
@@ -33,35 +28,30 @@ const Profile = () => {
     }
   }, [user]);
 
-  // Show loading while auth is initializin
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-800 via-purple-700 to-pink-700 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 flex items-center justify-center">
         <div className="text-white text-xl">Loading profile...</div>
       </div>
     );
   }
 
-  // Redirect message if not logged in
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-800 via-purple-700 to-pink-700 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 flex items-center justify-center">
         <div className="text-white text-xl">Please log in to view your profile</div>
       </div>
     );
   }
 
-  // Generate avatar URL using DiceBear Bottts style
   const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(avatarSeed)}`;
 
-  // Reroll avatar - generates a new random seed
   const handleRerollAvatar = () => {
     const newSeed = `${user.uid}-${Date.now()}`;
     setAvatarSeed(newSeed);
     setSuccessMsg("Avatar updated! Don't forget to save changes.");
   };
 
-  // Handle saving profile changes
   const handleSave = async () => {
     setSaving(true);
     setError("");
@@ -69,23 +59,16 @@ const Profile = () => {
     
     try {
       const updates = [];
-
-      // Always update profile to save the avatar seed in photoURL
       const newPhotoURL = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(avatarSeed)}`;
       
       if (displayName !== user.displayName || newPhotoURL !== user.photoURL) {
-        updates.push(updateProfile(user, { 
-          displayName, 
-          photoURL: newPhotoURL 
-        }));
+        updates.push(updateProfile(user, { displayName, photoURL: newPhotoURL }));
       }
 
-      // Update email if changed
       if (email && email !== user.email) {
         updates.push(updateEmail(user, email));
       }
 
-      // Update password if provided
       if (newPassword.trim()) {
         updates.push(updatePassword(user, newPassword));
       }
@@ -98,12 +81,10 @@ const Profile = () => {
 
       await Promise.all(updates);
       setSuccessMsg("Profile updated successfully!");
-      setNewPassword(""); // Clear password field after successful update
+      setNewPassword("");
     } catch (err) {
       console.error(err);
       let errorMessage = err.message;
-      
-      // Handle common errors
       if (err.code === 'auth/requires-recent-login') {
         errorMessage = "Please log out and log back in to change email/password";
       } else if (err.code === 'auth/weak-password') {
@@ -111,7 +92,6 @@ const Profile = () => {
       } else if (err.code === 'auth/email-already-in-use') {
         errorMessage = "This email is already in use";
       }
-      
       setError(errorMessage);
     } finally {
       setSaving(false);
@@ -119,9 +99,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-800 via-purple-700 to-pink-700 py-10 px-6 flex justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-800 via-cyan-700 to-blue-700 py-10 px-6 flex justify-center">
       <div className="max-w-3xl w-full bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-8 text-white relative">
-        {/* Settings ButtonTop Right */}
+        {/* Settings Button */}
         <button
           onClick={() => navigate('/settings')}
           className="absolute top-6 right-6 bg-white/20 hover:bg-white/30 p-3 rounded-full transition shadow-lg"
@@ -136,7 +116,7 @@ const Profile = () => {
         {/* Header */}
         <div className="flex items-center space-x-6 mb-10">
           <div className="relative">
-            <div className="w-28 h-28 rounded-full border-4 border-pink-400 shadow-lg overflow-hidden bg-white">
+            <div className="w-28 h-28 rounded-full border-4 border-cyan-400 shadow-lg overflow-hidden bg-white">
               <img
                 src={avatarUrl}
                 alt="Profile"
@@ -145,7 +125,7 @@ const Profile = () => {
             </div>
             <button
               onClick={handleRerollAvatar}
-              className="absolute bottom-0 right-0 bg-pink-600 p-2 rounded-full cursor-pointer hover:bg-pink-700 transition shadow-lg"
+              className="absolute bottom-0 right-0 bg-cyan-600 p-2 rounded-full cursor-pointer hover:bg-cyan-700 transition shadow-lg"
               title="Randomize avatar"
             >
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +135,7 @@ const Profile = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold">{displayName || "Your Name"}</h1>
-            <p className="text-sm text-pink-200">{email}</p>
+            <p className="text-sm text-cyan-200">{email}</p>
             {user.emailVerified && (
               <span className="inline-block mt-2 text-xs bg-green-500/30 text-green-200 px-2 py-1 rounded">
                 ✓ Verified
@@ -172,7 +152,7 @@ const Profile = () => {
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full bg-white/20 border border-pink-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full bg-white/20 border border-cyan-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Enter your name"
             />
           </div>
@@ -182,7 +162,7 @@ const Profile = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/20 border border-pink-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full bg-white/20 border border-cyan-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="your.email@example.com"
             />
           </div>
@@ -192,10 +172,10 @@ const Profile = () => {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows="3"
-              className="w-full bg-white/20 border border-pink-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+              className="w-full bg-white/20 border border-cyan-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
               placeholder="Tell the world about yourself..."
             ></textarea>
-            <p className="text-xs text-pink-200 mt-1">Note: Bio is stored locally in this session</p>
+            <p className="text-xs text-cyan-200 mt-1">Note: Bio is stored locally in this session</p>
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-2">New Password</label>
@@ -203,10 +183,10 @@ const Profile = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full bg-white/20 border border-pink-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full bg-white/20 border border-cyan-300 rounded-lg px-3 py-2.5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Leave blank to keep current password"
             />
-            <p className="text-xs text-pink-200 mt-1">Minimum 6 characters</p>
+            <p className="text-xs text-cyan-200 mt-1">Minimum 6 characters</p>
           </div>
         </div>
 
@@ -227,7 +207,7 @@ const Profile = () => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-xl font-semibold shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-xl font-semibold shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? "Saving..." : "Save Changes"}
             </button>
@@ -237,7 +217,7 @@ const Profile = () => {
         {/* Account Info */}
         <div className="mt-8 pt-6 border-t border-white/20">
           <h3 className="text-lg font-semibold mb-3">Account Information</h3>
-          <div className="space-y-2 text-sm text-pink-200">
+          <div className="space-y-2 text-sm text-cyan-200">
             <p><span className="font-medium">User ID:</span> {user.uid}</p>
             <p><span className="font-medium">Account Created:</span> {new Date(user.metadata.creationTime).toLocaleDateString()}</p>
             <p><span className="font-medium">Last Sign In:</span> {new Date(user.metadata.lastSignInTime).toLocaleDateString()}</p>
