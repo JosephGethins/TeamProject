@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children, requireInstructor = false, requireAdmin = false }) => {
-  const { user, loading, isInstructor, isAdmin } = useAuth();
+  const { user, loading, isInstructor, isAdmin, profileComplete } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -15,6 +16,11 @@ const ProtectedRoute = ({ children, requireInstructor = false, requireAdmin = fa
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Redirect to onboarding if profile is not complete (except if already on onboarding page)
+  if (!profileComplete && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
   }
 
   if (requireAdmin && !isAdmin) {

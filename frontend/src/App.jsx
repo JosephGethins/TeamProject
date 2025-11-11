@@ -9,6 +9,7 @@ import DataMetrics from "./pages/DataMetrics";
 import QuizProblem from "./pages/QuizProblem";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import Onboarding from "./pages/Onboarding";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -18,6 +19,11 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/onboarding" element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          } />
           <Route path="/" element={
             <ProtectedRoute>
               <Home />
