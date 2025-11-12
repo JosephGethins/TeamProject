@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { authRouter } from './routes/authRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
 import { timetableRouter } from './routes/timetableRoutes.js';
+import { moduleRouter } from './routes/moduleRoutes.js';
 
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.get('/health', (req, res) => {
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/timetable', timetableRouter);
+app.use('/modules', moduleRouter);
 
 
 // Error handling middleware
