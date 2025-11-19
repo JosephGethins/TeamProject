@@ -48,7 +48,6 @@ const Navbar = () => {
           <Link to="/quiz" className="hover:text-white/70 transition">Quiz</Link>
           <Link to="/edit-timetable" className="hover:text-white/70 transition">Timetable</Link>
           <Link to="/data-metrics" className="hover:text-white/70 transition">Metrics</Link>
-          <Link to="/quiz-problem" className="hover:text-white/70 transition">Problems</Link>
           
           <div className="flex items-center space-x-2 ml-4">
             <span className="text-sm">Welcome, {user?.displayName || user?.email}</span>
