@@ -106,8 +106,8 @@ const Bubble = ({
   const startHour = Number(item.startHour || startBase);
   const top = (startHour - startBase) * hourHeight;
   const height = Math.max(1, (item.duration || 1)) * hourHeight - 4; // small gap
-  const left = colLeft + 6; // padding inside column
-  const width = Math.max(40, colWidth - 12);
+  const left = colLeft + 8; // padding inside column
+  const width = Math.max(40, colWidth - 16);
   const sessionType = item.sessionType || 'Lecture';
   const styles = typeStyles[sessionType] || typeStyles.Lecture;
 

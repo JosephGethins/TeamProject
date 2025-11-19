@@ -47,6 +47,18 @@ const Home = () => {
   const formatTime = () =>
     currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
+  // Calculate classes today
+  const getClassesToday = () => {
+    const dayOfWeek = currentTime.getDay(); // 0=Sunday, 1=Monday, etc.
+    // Map to timetable day index (0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri)
+    const dayMap = { 0: -1, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: -1 }; // Weekend = -1
+    const todayIndex = dayMap[dayOfWeek];
+    
+    if (todayIndex === -1) return 0; // Weekend, no classes
+    
+    return items.filter(item => item.day === todayIndex).length;
+  };
+
   return (
     <div 
       className="min-h-screen py-8 px-6"
@@ -98,7 +110,7 @@ const Home = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{items.length}</p>
+            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{getClassesToday()}</p>
           </div>
 
           {/* Quiz Mode */}

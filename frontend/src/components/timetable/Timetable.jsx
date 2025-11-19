@@ -36,6 +36,37 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
 
   const dayColumnLeft = (dayIndex) => dayIndex * colWidth;
 
+  // Check if a time slot is occupied by any existing item (excluding the item being updated)
+  const isSlotOccupied = (day, startHour, duration, excludeId = null) => {
+    return localItems.some((item) => {
+      if (item.id === excludeId) return false; // skip the item being moved/resized
+      if (item.day !== day) return false; // different day
+      
+      const itemEnd = item.startHour + (item.duration || 1);
+      const slotEnd = startHour + duration;
+      
+      // Check if time ranges overlap
+      return startHour < itemEnd && slotEnd > item.startHour;
+    });
+  };
+
+  // Find maximum allowed duration without collision
+  const getMaxAllowedDuration = (day, startHour, excludeId = null) => {
+    let maxDuration = END_HOUR - startHour; // max possible
+    
+    for (const item of localItems) {
+      if (item.id === excludeId) continue;
+      if (item.day !== day) continue;
+      if (item.startHour <= startHour) continue; // item is before or at same time
+      
+      // Item is after our start - limit duration to not overlap
+      const gapDuration = item.startHour - startHour;
+      maxDuration = Math.min(maxDuration, gapDuration);
+    }
+    
+    return Math.max(1, maxDuration);
+  };
+
   const posToDayHour = (x, y) => {
     const rect = containerRef.current.getBoundingClientRect();
     const relX = x - rect.left - GUTTER_LEFT; // after gutter
@@ -51,6 +82,11 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
     const newId = `tmp-${Date.now()}`;
     
     if (moduleData) {
+      // Check if slot is already occupied - silently prevent
+      if (isSlotOccupied(day, hour, 1)) {
+        return;
+      }
+      
       // Adding from sidebar drag - use module data
       const newItem = {
         id: newId,
@@ -122,12 +158,31 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
     if (!item._dragging) return;
     item._dragging = false;
     const updatedItem = localItems.find((it) => it.id === item.id) || item;
+    
+    // Check if new position would cause overlap - silently revert to original
+    if (isSlotOccupied(updatedItem.day, updatedItem.startHour, updatedItem.duration || 1, item.id)) {
+      // Revert to original position - reload from items prop or reset
+      setLocalItems(items || []);
+      return;
+    }
+    
     setLocalItems((prev) => prev.map((it) => (it.id === item.id ? updatedItem : it)));
     onChange && onChange({ type: 'update', item: updatedItem });
   };
 
   // Generic updater (used by session type change, resizing, etc.)
   const updateItem = (updated) => {
+    // If duration changed, check for collisions
+    const original = localItems.find((it) => it.id === updated.id);
+    if (original && original.duration !== updated.duration) {
+      // Check if resize would cause overlap
+      if (isSlotOccupied(updated.day, updated.startHour, updated.duration || 1, updated.id)) {
+        // Clamp duration to max allowed
+        const maxAllowed = getMaxAllowedDuration(updated.day, updated.startHour, updated.id);
+        updated = { ...updated, duration: maxAllowed };
+      }
+    }
+    
     setLocalItems((prev) => prev.map((it) => (it.id === updated.id ? updated : it)));
     onChange && onChange({ type: 'update', item: updated });
   };
@@ -141,69 +196,82 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
     <div className="w-full flex gap-4 h-full">
       <div
         className="flex-1 border rounded relative overflow-auto bg-gray-50"
-        style={{ height: `${gridHeight + HEADER_HEIGHT}px`, paddingTop: HEADER_HEIGHT, paddingLeft: GUTTER_LEFT, backgroundColor: dragOverClass || 'rgb(249, 250, 251)' }}
+        style={{ height: `${gridHeight + HEADER_HEIGHT}px`, backgroundColor: dragOverClass || 'rgb(249, 250, 251)' }}
         ref={containerRef}
         onClick={handleGridClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        {/* Header background bar */}
-        <div className="absolute left-0 right-0" style={{ top: 0, height: `${HEADER_HEIGHT}px` }} />
-
-        {/* Day column headers (inside padding) */}
-        {DAYS.map((d, i) => (
-          <div
-            key={d}
-            style={{ left: `${dayColumnLeft(i)}px`, top: `-${HEADER_HEIGHT}px`, width: `${colWidth}px` }}
-            className="absolute text-sm font-medium text-gray-700 text-center"
-          >
-            {d}
+        {/* Fixed header row for day labels */}
+        <div className="sticky top-0 left-0 right-0 z-30 bg-white border-b border-gray-300" style={{ height: `${HEADER_HEIGHT}px` }}>
+          <div className="flex h-full">
+            {/* Empty corner cell */}
+            <div style={{ width: `${GUTTER_LEFT}px` }} className="border-r border-gray-300 bg-gray-100" />
+            {/* Day column headers */}
+            {DAYS.map((d, i) => (
+              <div
+                key={d}
+                style={{ width: `${colWidth}px` }}
+                className="flex items-center justify-center text-sm font-medium text-gray-700 border-r border-gray-200 last:border-r-0"
+              >
+                {d}
+              </div>
+            ))}
           </div>
-        ))}
-
-        {/* Time labels gutter */}
-        <div className="absolute" style={{ left: `${-GUTTER_LEFT}px`, top: `0px`, width: `${GUTTER_LEFT - 8}px` }}>
-          {Array.from({ length: hourCount }).map((_, hi) => (
-            <div key={`label-${hi}`} className="text-xs text-gray-500 h-px" style={{ position: 'absolute', top: `${hi * hourHeight - 6}px`, right: '4px' }}>
-              {START_HOUR + hi}:00
-            </div>
-          ))}
         </div>
 
-        {/* Hour grid lines */}
-        {Array.from({ length: hourCount }).map((_, hi) => (
-          <div key={`row-${hi}`} style={{ top: `${hi * hourHeight}px` }} className="absolute left-0 right-0 border-t border-gray-200" />
-        ))}
+        {/* Scrollable content area with time gutter and grid */}
+        <div className="relative flex" style={{ height: `${gridHeight}px` }}>
+          {/* Time labels gutter (fixed left) */}
+          <div className="sticky left-0 top-0 bg-gray-100 border-r border-gray-300 shrink-0" style={{ width: `${GUTTER_LEFT}px` }}>
+            {Array.from({ length: hourCount }).map((_, hi) => (
+              <div key={`label-${hi}`} className="text-xs text-gray-600 text-right pr-2" style={{ height: `${hourHeight}px`, lineHeight: `${hourHeight}px` }}>
+                {START_HOUR + hi}:00
+              </div>
+            ))}
+          </div>
 
-        {/* Vertical column separators */}
-        {DAYS.map((_, i) => (
-          <div
-            key={`col-${i}`}
-            style={{ left: `${dayColumnLeft(i)}px`, top: 0, bottom: 0, width: `${colWidth}px` }}
-            className="absolute pointer-events-none border-r border-gray-200"
-          />
-        ))}
+          {/* Grid area with days */}
+          <div className="relative flex-1">
+            {/* Hour grid lines */}
+            {Array.from({ length: hourCount }).map((_, hi) => (
+              <div key={`row-${hi}`} style={{ top: `${hi * hourHeight}px` }} className="absolute left-0 right-0 border-t border-gray-200" />
+            ))}
 
-        {/* Bubbles */}
-        {localItems.map((it) => (
-          <Bubble
-            key={it.id}
-            item={it}
-            hourHeight={hourHeight}
-            startBase={START_HOUR}
-            colLeft={dayColumnLeft(it.day || 0)}
-            colWidth={colWidth}
-            maxDuration={END_HOUR - (it.startHour || START_HOUR)}
-            onStartDrag={onStartDrag}
-            onDrag={onDrag}
-            onEndDrag={onEndDrag}
-            onUpdate={updateItem}
-            onDelete={deleteItem}
-            locked={locked}
-            deleteMode={deleteMode}
-          />
-        ))}
+            {/* Vertical column separators */}
+            {DAYS.map((_, i) => (
+              <div
+                key={`col-${i}`}
+                style={{ left: `${dayColumnLeft(i)}px`, top: 0, bottom: 0, width: `${colWidth}px` }}
+                className="absolute pointer-events-none border-r border-gray-200"
+              />
+            ))}
+
+            {/* Bubbles */}
+            {localItems.map((it) => {
+              const maxAllowed = getMaxAllowedDuration(it.day || 0, it.startHour || START_HOUR, it.id);
+              return (
+                <Bubble
+                  key={it.id}
+                  item={it}
+                  hourHeight={hourHeight}
+                  startBase={START_HOUR}
+                  colLeft={dayColumnLeft(it.day || 0)}
+                  colWidth={colWidth}
+                  maxDuration={maxAllowed}
+                  onStartDrag={onStartDrag}
+                  onDrag={onDrag}
+                  onEndDrag={onEndDrag}
+                  onUpdate={updateItem}
+                  onDelete={deleteItem}
+                  locked={locked}
+                  deleteMode={deleteMode}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
