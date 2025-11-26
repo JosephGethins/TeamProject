@@ -7,8 +7,6 @@ import { loadTimetable, modifyTimetableItem } from '../utils/timetableService';
 const EditTimetable = () => {
   const { user, loading } = useAuth();
   const [items, setItems] = useState([]);
-  const [locked, setLocked] = useState(false);
-  const [deleteMode, setDeleteMode] = useState(false);
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -80,25 +78,6 @@ const EditTimetable = () => {
               </button>
               <h2 className="text-xl font-bold">Edit Timetable</h2>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setLocked((s) => !s)}
-                className="px-4 py-2 rounded-lg font-semibold shadow transition"
-                style={{ background: 'linear-gradient(to right, var(--primary-start), var(--primary-end))' }}
-              >
-                {locked ? 'Unlock' : 'Lock'}
-              </button>
-              <button
-                onClick={() => setDeleteMode((s) => !s)}
-                className={`px-4 py-2 rounded-lg font-semibold shadow transition`}
-                style={{
-                  background: deleteMode ? 'var(--error-bg)' : 'var(--secondary-bg)',
-                  color: deleteMode ? 'var(--error-text)' : 'var(--secondary-text)'
-                }}
-              >
-                {deleteMode ? 'Delete mode: ON' : 'Delete mode: OFF'}
-              </button>
-            </div>
           </div>
         </div>
 
@@ -110,7 +89,7 @@ const EditTimetable = () => {
             </div>
           )}
           <div className="rounded-2xl p-4 overflow-x-auto h-full" style={{ backgroundColor: 'var(--card-bg)' }}>
-            <Timetable items={items} onChange={handleChange} locked={locked} deleteMode={deleteMode} />
+            <Timetable items={items} onChange={handleChange} />
           </div>
         </div>
       </div>

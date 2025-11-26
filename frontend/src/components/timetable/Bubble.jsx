@@ -46,6 +46,8 @@ const Bubble = ({
     if (!el) return;
     const handlePointerDown = (e) => {
       if (locked) return;
+      // Ignore if clicking on buttons
+      if (e.target.closest('button')) return;
       e.preventDefault();
       // Start resizing if click is within bottom zone anywhere or on explicit handle; else drag-move
       const elRect = ref.current?.getBoundingClientRect();
@@ -159,9 +161,7 @@ const Bubble = ({
         <div className="mx-auto w-14 h-1.5 bg-gray-300 rounded-full my-0.5" />
       </div>
 
-      {!deleteMode && (
-        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete && onDelete(item.id); }} className="absolute right-2 top-1 text-xs bg-red-500 text-white rounded px-2 py-0.5 hover:bg-red-600">Del</button>
-      )}
+      <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete && onDelete(item.id); }} className="absolute right-2 top-1 text-xs bg-red-500 text-white rounded px-2 py-0.5 hover:bg-red-600">Del</button>
     </div>
   );
 };
