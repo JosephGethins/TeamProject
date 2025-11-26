@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Navbar from "./components/Navbar";
+import QuestionBank from "./pages/QuestionBank";
 
 function App() {
   return (
@@ -59,6 +60,11 @@ function App() {
               <Settings />
             </ProtectedRoute>
           } />
+          <Route path="/question-bank" element={
+            <ProtectedRoute>
+              <QuestionBank />
+            </ProtectedRoute>
+}           />
         </Routes>
       </Router>
     </AuthProvider>

@@ -47,7 +47,7 @@ const Navbar = () => {
           <Link to="/profile" className="hover:text-white/70 transition">Profile</Link>
           <Link to="/quiz" className="hover:text-white/70 transition">Quiz</Link>
           <Link to="/edit-timetable" className="hover:text-white/70 transition">Timetable</Link>
-          <Link to="/data-metrics" className="hover:text-white/70 transition">Metrics</Link>
+          <Link to="/question-bank" className="hover:text-white/70 transition">Question Bank</Link>
           
           <div className="flex items-center space-x-2 ml-4">
             <span className="text-sm">Welcome, {user?.displayName || user?.email}</span>
