@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { getUserModules } from '../../utils/moduleService';
+import { getUserModules, getAllModules } from '../../utils/moduleService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ModuleSidebar = ({ collapsed = false }) => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const loadModules = async () => {
       try {
-        const data = await getUserModules();
+        // Admins get all modules, students get their selected modules
+        const data = isAdmin ? await getAllModules() : await getUserModules();
         setModules(data.modules || []);
       } catch (err) {
         console.error('Failed to load modules:', err);
@@ -18,7 +21,7 @@ const ModuleSidebar = ({ collapsed = false }) => {
     };
 
     loadModules();
-  }, []);
+  }, [isAdmin]);
 
   const handleDragStart = (e, module) => {
     e.dataTransfer.effectAllowed = 'copy';
@@ -39,9 +42,9 @@ const ModuleSidebar = ({ collapsed = false }) => {
   return (
     <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-gray-200 bg-white">
-        <h2 className="font-bold text-lg">Your Modules</h2>
+        <h2 className="font-bold text-lg">{isAdmin ? 'All Modules' : 'Your Modules'}</h2>
         <p className="text-xs text-gray-500 mt-1">
-          Drag modules to the timetable
+          {isAdmin ? 'Drag modules to create timetables' : 'Drag modules to the timetable'}
         </p>
       </div>
 

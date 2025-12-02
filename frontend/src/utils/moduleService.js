@@ -41,3 +41,7 @@ export async function setUserModules(moduleIds) {
 export async function getUserModules() {
   return authFetch('/modules/selected');
 }
+
+export async function getAllModules() {
+  return authFetch('/modules/all');
+}

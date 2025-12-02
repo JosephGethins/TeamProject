@@ -70,12 +70,8 @@ const EditTimetable = () => {
         <div className="bg-white border-b border-gray-200 p-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <button 
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="px-2 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
-              >
-                {sidebarCollapsed ? '→' : '←'}
-              </button>
+              
+              
               <h2 className="text-xl font-bold">Edit Timetable</h2>
             </div>
           </div>

@@ -28,6 +28,13 @@ const Login = () => {
     setLoading(true);
     setError('');
 
+    // Validate password length before making API call
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+
     try {
       let result;
       if (isLogin) {

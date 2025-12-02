@@ -5,10 +5,17 @@ import YearSelection from './YearSelection';
 import ModuleSelection from './ModuleSelection';
 
 const Onboarding = () => {
-  const { userProfile, reloadUserProfile } = useAuth();
+  const { userProfile, reloadUserProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState('year');
   const [selectedYear, setSelectedYear] = useState(null);
+
+  // If user is admin, redirect to home immediately
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/');
+    }
+  }, [isAdmin, navigate]);
 
   // If user already completed onboarding, redirect to home
   useEffect(() => {

@@ -6,36 +6,49 @@ const db = getFirestore();
 // Module data structure by year
 const MODULES_BY_YEAR = {
   1: [
-    { id: 'CS1001', name: 'Introduction to Programming', code: 'CS1001' },
-    { id: 'CS1002', name: 'Data Structures', code: 'CS1002' },
-    { id: 'CS1003', name: 'Digital Logic', code: 'CS1003' },
-    { id: 'MATH1001', name: 'Calculus I', code: 'MATH1001' },
-    { id: 'MATH1002', name: 'Linear Algebra', code: 'MATH1002' },
-    { id: 'ENG1001', name: 'Technical Writing', code: 'ENG1001' },
+    { id: 'CS161', name: 'Introduction to Programming', code: 'CS161' },
+    { id: 'CS162', name: 'Data Structures', code: 'CS162' },
+    { id: 'CS171', name: 'Digital Logic', code: 'CS171' },
+    { id: 'CS172', name: 'Calculus I', code: 'CS172' },
+    { id: 'MT101SC', name: 'Linear Algebra', code: 'MT101SC' },
+    { id: 'MT102SC', name: 'Technical Writing', code: 'MT102SC' },
+    { id: 'MT113SC', name: 'Linear Algebra', code: 'MT113SC' },
   ],
   2: [
-    { id: 'CS2001', name: 'Object-Oriented Programming', code: 'CS2001' },
-    { id: 'CS2002', name: 'Algorithms', code: 'CS2002' },
-    { id: 'CS2003', name: 'Database Systems', code: 'CS2003' },
-    { id: 'MATH2001', name: 'Calculus II', code: 'MATH2001' },
-    { id: 'MATH2002', name: 'Discrete Mathematics', code: 'MATH2002' },
-    { id: 'CS2004', name: 'Web Development', code: 'CS2004' },
+    { id: 'CS210', name: 'Algorithms and data structures I', code: 'CS210' },
+    { id: 'CS211', name: 'Algorithms and data structures II', code: 'CS211' },
+    { id: 'CS130', name: 'Database Systems', code: 'CS130' },
+    { id: 'MT201S', name: 'Calculus III', code: 'MT201S' },
+    { id: 'ST221', name: 'Statistics', code: 'ST221' },
+    { id: 'CS230', name: 'Web Development', code: 'CS230' },
+    { id: 'CS220', name: 'Computer Architecture', code: 'CS220' },
+    { id: 'CS240', name: 'Operating Systems', code: 'CS240' },
+    { id: 'CS280', name: 'UI/UX Design', code: 'CS280' },
+    { id: 'CS265', name: 'Software Testing', code: 'CS265' },
+    { id: 'CS335', name: 'Software Engineering and Processes', code: 'CS335' },
+    { id: 'CS355', name: 'Theory of Computation', code: 'CS355' },
   ],
   3: [
-    { id: 'CS3001', name: 'Software Engineering', code: 'CS3001' },
-    { id: 'CS3002', name: 'Operating Systems', code: 'CS3002' },
-    { id: 'CS3003', name: 'Computer Networks', code: 'CS3003' },
-    { id: 'CS3004', name: 'Machine Learning', code: 'CS3004' },
-    { id: 'CS3005', name: 'Mobile Development', code: 'CS3005' },
-    { id: 'CS3006', name: 'Cybersecurity', code: 'CS3006' },
+    { id: 'CS70', name: 'Computation and Complexity', code: 'CS70' },
+    { id: 'CS264', name: 'Software Design', code: 'CS264' },
+    { id: 'CS320', name: 'Computer Networks', code: 'CS320' },
+    { id: 'CS310', name: 'Programming Languages and Compilers', code: 'CS310' },
+    { id: 'CS357', name: 'Software Verification', code: 'CS357' },
+    { id: 'CS353', name: 'Team Project', code: 'CS353' },
   ],
   4: [
-    { id: 'CS4001', name: 'Cloud Computing', code: 'CS4001' },
-    { id: 'CS4002', name: 'AI & Deep Learning', code: 'CS4002' },
-    { id: 'CS4003', name: 'Advanced Algorithms', code: 'CS4003' },
-    { id: 'CS4004', name: 'Distributed Systems', code: 'CS4004' },
-    { id: 'CS4005', name: 'Project Management', code: 'CS4005' },
-    { id: 'CS4006', name: 'Capstone Project', code: 'CS4006' },
+    { id: 'CS401', name: 'Machine Learning', code: 'CS401' },
+    { id: 'CS410', name: 'Computer Vision', code: 'CS410' },
+    { id: 'CS416', name: 'Cryptography', code: 'CS416' },
+    { id: 'CS404', name: 'AI & Deep Learning', code: 'CS404' },
+    { id: 'CS424', name: 'PROGRAMMING LANGUAGE DESIGN & SEMANTICS', code: 'CS424' },
+    { id: 'CS440', name: 'Final Year Project', code: 'CS440' },
+    { id: 'CS402', name: 'Parallel & Distributed Systems', code: 'CS402' },
+    { id: 'CS430', name: 'Advanced Concepts & Issues', code: 'CS430' },
+    { id: 'CS433', name: 'Advanced Computer Architecture', code: 'CS433' },
+    { id: 'CS425', name: 'Audio & Speech Processing', code: 'CS425' },
+    { id: 'CS427', name: 'Autonomous Mobile Robotics', code: 'CS427' },
+    { id: 'CS426', name: 'Computer Graphics', code: 'CS426' },
   ],
 };
 
@@ -107,4 +120,13 @@ export async function getUserModulesWithDetails(uid) {
 
   const allModules = MODULES_BY_YEAR[profile.year] || [];
   return allModules.filter(m => profile.selectedModules.includes(m.id));
+}
+
+// Get all modules across all years
+export async function getAllModules() {
+  const allModules = [];
+  for (const year in MODULES_BY_YEAR) {
+    allModules.push(...MODULES_BY_YEAR[year]);
+  }
+  return allModules;
 }

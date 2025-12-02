@@ -19,7 +19,8 @@ const ProtectedRoute = ({ children, requireInstructor = false, requireAdmin = fa
   }
 
   // Redirect to onboarding if profile is not complete (except if already on onboarding page)
-  if (!profileComplete && location.pathname !== '/onboarding') {
+  // Skip onboarding for admin users with @mu.ie emails
+  if (!profileComplete && !isAdmin && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
 

@@ -8,6 +8,27 @@ import {
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
+// Helper function to get user-friendly error messages
+const getAuthErrorMessage = (error) => {
+  switch (error.code) {
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-email':
+      return 'Email or password is wrong. Try Again!';
+    case 'auth/email-already-in-use':
+      return 'This email is already in use. Please sign in instead.';
+    case 'auth/weak-password':
+      return 'Password is too weak. Use at least 6 characters.';
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please try again later.';
+    case 'auth/network-request-failed':
+      return 'Network error. Please check your connection.';
+    default:
+      return 'An error occurred. Please try again.';
+  }
+};
+
 // Sign in with email and password
 export const signIn = async (email, password) => {
   try {
@@ -20,7 +41,7 @@ export const signIn = async (email, password) => {
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: getAuthErrorMessage(error)
     };
   }
 };
@@ -45,7 +66,7 @@ export const signUp = async (email, password, displayName) => {
   } catch (error) {
     return {
       success: false,
-      error: error.message
+      error: getAuthErrorMessage(error)
     };
   }
 };

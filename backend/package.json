@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "setup": "node setup.js",
-    "test": "node src/index-test.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
@@ -19,6 +20,8 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^6.3.3"
   }
 }

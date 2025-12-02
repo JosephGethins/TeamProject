@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     reloadUserProfile,
     isAuthenticated: !!user,
     isInstructor: user?.role === 'instructor',
-    isAdmin: user?.role === 'admin',
+    isAdmin: user?.email?.endsWith('@mu.ie') || false,
     userYear: userProfile?.year,
     selectedModules: userProfile?.selectedModules || [],
     profileComplete: userProfile?.profileComplete || false,

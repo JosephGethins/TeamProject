@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { getAllModules } from '../utils/moduleService';
 
 export default function QuestionBank() {
   const [allModules, setAllModules] = useState([]);
@@ -16,7 +17,7 @@ export default function QuestionBank() {
     correctAnswer: 0,
     difficulty: 'medium'
   });
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
 
   useEffect(() => {
     fetchAllUsers();
@@ -31,51 +32,20 @@ export default function QuestionBank() {
   const fetchAllUsers = async () => {
     try {
       setLoading(true);
-      // Fetch ALL users to get ALL their modules
-      const usersRef = collection(db, 'users');
-      const snapshot = await getDocs(usersRef);
+      // Fetch all modules from backend API
+      const response = await getAllModules();
+      const modules = response.modules || [];
       
-      console.log('Total users found:', snapshot.docs.length);
+      console.log('All modules fetched:', modules);
       
-      const allModulesSet = new Set();
-      
-      snapshot.docs.forEach(userDoc => {
-        const userData = userDoc.data();
-        console.log('User data:', userData);
-        
-        // Check different possible module storage formats
-        if (userData.modules && Array.isArray(userData.modules)) {
-          userData.modules.forEach(module => {
-            if (typeof module === 'string') {
-              allModulesSet.add(module);
-            } else if (module.name) {
-              allModulesSet.add(module.name);
-            } else if (module.title) {
-              allModulesSet.add(module.title);
-            }
-          });
-        }
-        
-        // Also check selectedModules field
-        if (userData.selectedModules && Array.isArray(userData.selectedModules)) {
-          userData.selectedModules.forEach(module => {
-            if (typeof module === 'string') {
-              allModulesSet.add(module);
-            } else if (module.name) {
-              allModulesSet.add(module.name);
-            }
-          });
-        }
-      });
-      
-      console.log('All unique modules found:', Array.from(allModulesSet));
-      
-      const uniqueModules = Array.from(allModulesSet).map(name => ({
-        id: name.replace(/\s+/g, '-').toLowerCase(),
-        name: name
+      // Transform modules to include both id and name
+      const formattedModules = modules.map(module => ({
+        id: module.id || module.code,
+        name: module.name,
+        code: module.code
       }));
       
-      setAllModules(uniqueModules.sort((a, b) => a.name.localeCompare(b.name)));
+      setAllModules(formattedModules.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (error) {
       console.error('Error fetching modules:', error);
       setAllModules([]);
@@ -180,6 +150,28 @@ export default function QuestionBank() {
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
+
+  // Check if user is admin
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 py-8 px-4 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-12 text-center max-w-md">
+          <div className="text-red-500 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-4">
+            Only administrators with @mu.ie email addresses can access the Question Bank.
+          </p>
+          <p className="text-sm text-gray-500">
+            Your email: {currentUser?.email || 'Not logged in'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading && allModules.length === 0) {
     return (

@@ -195,7 +195,7 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
   return (
     <div className="w-full flex gap-4 h-full">
       <div
-        className="flex-1 border rounded relative overflow-auto bg-gray-50"
+        className="flex-1 border rounded relative overflow-hidden bg-gray-50"
         style={{ height: `${gridHeight + HEADER_HEIGHT}px`, backgroundColor: dragOverClass || 'rgb(249, 250, 251)' }}
         ref={containerRef}
         onClick={handleGridClick}

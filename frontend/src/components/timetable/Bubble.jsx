@@ -140,7 +140,7 @@ const Bubble = ({
       style={{ top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px`, zIndex: dragging ? 50 : 10 }}
       title={`${item.title || 'Untitled'} — ${item.location || ''}`}
     >
-      <div className="font-semibold text-sm truncate">{item.title || 'Untitled'}</div>
+      <div className="font-semibold text-sm truncate">{item.moduleCode || item.title || 'Untitled'}</div>
       <div className="text-xs text-gray-600">{item.location || ''}</div>
       <div className="flex items-center justify-between mt-1">
         <span className="text-xs text-gray-500">{item.duration || 1}h</span>

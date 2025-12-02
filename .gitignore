@@ -17,6 +17,9 @@ lerna-debug.log*
 # Dependencies
 node_modules
 
+# Test coverage
+coverage
+
 # Build output
 dist
 dist-ssr
