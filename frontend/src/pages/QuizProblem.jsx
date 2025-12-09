@@ -11,6 +11,7 @@ const QuizProblem = () => {
   
   const moduleId = searchParams.get('module');
   const moduleName = searchParams.get('name');
+  const examMode = searchParams.get('examMode') === 'true';
   
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -21,10 +22,27 @@ const QuizProblem = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quizComplete, setQuizComplete] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes in seconds
 
   useEffect(() => {
     fetchQuestions();
   }, [moduleName]);
+
+  useEffect(() => {
+    let timer;
+    if (examMode && !quizComplete && timeRemaining > 0) {
+      timer = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            handleTimeUp();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [examMode, quizComplete, timeRemaining]);
 
   const fetchQuestions = async () => {
     try {
@@ -56,12 +74,16 @@ const QuizProblem = () => {
   };
 
   const handleAnswerSelect = (answerIndex) => {
-    if (showFeedback) return; // Prevent changing answer after selection
-    
+    if (showFeedback) return; // Prevent changing answer after submission
     setSelectedAnswer(answerIndex);
+  };
+
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer === null) return; // Can't submit without selecting an answer
+    
     setShowFeedback(true);
     
-    const isCorrect = answerIndex === questions[currentQuestionIndex].correctAnswer;
+    const isCorrect = selectedAnswer === questions[currentQuestionIndex].correctAnswer;
     
     // Update score and answered questions
     if (isCorrect) {
@@ -70,7 +92,7 @@ const QuizProblem = () => {
     
     setAnsweredQuestions([...answeredQuestions, {
       questionId: questions[currentQuestionIndex].id,
-      selectedAnswer: answerIndex,
+      selectedAnswer: selectedAnswer,
       correctAnswer: questions[currentQuestionIndex].correctAnswer,
       isCorrect
     }]);
@@ -93,15 +115,32 @@ const QuizProblem = () => {
     setScore(0);
     setAnsweredQuestions([]);
     setQuizComplete(false);
+    setTimeRemaining(900);
     // Reshuffle questions
     const shuffled = [...questions].sort(() => Math.random() - 0.5);
     setQuestions(shuffled);
   };
 
+  const handleTimeUp = () => {
+    // Calculate score based on answered questions
+    let finalScore = score;
+    
+    // All unanswered questions count as wrong
+    const unansweredCount = questions.length - answeredQuestions.length;
+    
+    setQuizComplete(true);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const getAnswerClassName = (index) => {
     if (!showFeedback) {
       return selectedAnswer === index
-        ? 'border-blue-500 bg-blue-50'
+        ? 'border-blue-500 bg-blue-50 transform scale-105'
         : 'border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50';
     }
 
@@ -238,6 +277,9 @@ const QuizProblem = () => {
                   </p>
                   <p className="text-sm mt-1">
                     Passing score: 70%
+                    {examMode && timeRemaining === 0 && (
+                      <span className="block mt-1 text-red-700">⏰ Time expired - quiz auto-submitted</span>
+                    )}
                   </p>
                 </div>
               )}
@@ -249,6 +291,9 @@ const QuizProblem = () => {
                   </p>
                   <p className="text-sm mt-1">
                     Passing score: 70% (You scored {percentage}%)
+                    {examMode && timeRemaining === 0 && (
+                      <span className="block mt-1">⏰ Time expired - quiz auto-submitted</span>
+                    )}
                   </p>
                 </div>
               )}
@@ -279,14 +324,34 @@ const QuizProblem = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-10 px-6">
       <div className="max-w-4xl mx-auto">
+        {/* Exam Mode Indicator */}
+        {examMode && (
+          <div className="mb-6 flex justify-center">
+            <div className="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+              <span className="flex items-center gap-2">
+                🔥 Exam Mode Active
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{moduleName}</h1>
-              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(currentQuestion.difficulty)}`}>
-                {currentQuestion.difficulty.charAt(0).toUpperCase() + currentQuestion.difficulty.slice(1)}
-              </span>
+              <div className="flex items-center gap-2 mt-2">
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(currentQuestion.difficulty)}`}>
+                  {currentQuestion.difficulty.charAt(0).toUpperCase() + currentQuestion.difficulty.slice(1)}
+                </span>
+                {examMode && (
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                    timeRemaining < 180 ? 'bg-red-100 text-red-800 animate-pulse' : 'bg-orange-100 text-orange-800'
+                  }`}>
+                    ⏱️ {formatTime(timeRemaining)}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
@@ -373,23 +438,37 @@ const QuizProblem = () => {
               ← Exit Quiz
             </button>
             
-            {showFeedback && (
-              <button
-                onClick={handleNextQuestion}
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold flex items-center gap-2"
-              >
-                {currentQuestionIndex < questions.length - 1 ? (
-                  <>
-                    Next Question
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </>
-                ) : (
-                  'Finish Quiz'
-                )}
-              </button>
-            )}
+            <div className="flex gap-3">
+              {!showFeedback && selectedAnswer !== null && (
+                <button
+                  onClick={handleSubmitAnswer}
+                  className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Submit Answer
+                </button>
+              )}
+              
+              {showFeedback && (
+                <button
+                  onClick={handleNextQuestion}
+                  className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold flex items-center gap-2"
+                >
+                  {currentQuestionIndex < questions.length - 1 ? (
+                    <>
+                      Next Question
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </>
+                  ) : (
+                    'Finish Quiz'
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 

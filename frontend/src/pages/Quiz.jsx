@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserModules } from '../utils/moduleService';
+import { getUserModules, getAllModules } from '../utils/moduleService';
+import { useAuth } from '../contexts/AuthContext';
 
 const Quiz = () => {
-  const [modules, setModules] = useState([]);
+  const [userModules, setUserModules] = useState([]);
+  const [allModules, setAllModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState('current'); // 'current' or 'all'
+  const [examMode, setExamMode] = useState(false);
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,20 +20,31 @@ const Quiz = () => {
   const fetchModules = async () => {
     try {
       setLoading(true);
-      const data = await getUserModules();
-      console.log('Fetched modules data:', data); // Debug log
       
-      // Handle different response formats
-      if (Array.isArray(data)) {
-        setModules(data);
-      } else if (data && Array.isArray(data.modules)) {
-        setModules(data.modules);
-      } else if (data && typeof data === 'object') {
-        // If it's an object, convert to array
-        setModules(Object.values(data));
-      } else {
-        setModules([]);
+      // Fetch user's modules
+      const userData = await getUserModules();
+      let userMods = [];
+      if (Array.isArray(userData)) {
+        userMods = userData;
+      } else if (userData && Array.isArray(userData.modules)) {
+        userMods = userData.modules;
+      } else if (userData && typeof userData === 'object') {
+        userMods = Object.values(userData);
       }
+      setUserModules(userMods);
+
+      // Fetch all available modules
+      const allData = await getAllModules();
+      let allMods = [];
+      if (Array.isArray(allData)) {
+        allMods = allData;
+      } else if (allData && Array.isArray(allData.modules)) {
+        allMods = allData.modules;
+      } else if (allData && typeof allData === 'object') {
+        allMods = Object.values(allData);
+      }
+      setAllModules(allMods);
+      
     } catch (err) {
       setError('Failed to load modules. Please try again.');
       console.error('Error fetching modules:', err);
@@ -38,13 +53,26 @@ const Quiz = () => {
     }
   };
 
-  // Extract unique categories from modules
-  const categories = ['All', ...new Set(modules.map(m => m.category || 'General'))];
+  // Get user's current year (assuming it's stored in the user's profile or first module)
+  const getCurrentYear = () => {
+    if (userModules.length > 0 && userModules[0].year) {
+      return userModules[0].year;
+    }
+    // Default to "Your Current Year" if year not found
+    return "Your Current Year";
+  };
 
-  // Filter modules based on active filter
-  const filteredModules = activeFilter === 'All' 
-    ? modules 
-    : modules.filter(m => (m.category || 'General') === activeFilter);
+  // Get modules to display based on active filter
+  const getDisplayModules = () => {
+    if (activeFilter === 'all') {
+      return allModules;
+    } else {
+      return userModules;
+    }
+  };
+
+  const displayModules = getDisplayModules();
+  const currentYearLabel = getCurrentYear();
 
   // Color schemes for different categories
   const getCategoryColors = (category) => {
@@ -68,7 +96,7 @@ const Quiz = () => {
   };
 
   const handleQuizClick = (moduleId, moduleName) => {
-    navigate(`/quiz-problem?module=${moduleId}&name=${encodeURIComponent(moduleName)}`);
+    navigate(`/quiz-problem?module=${moduleId}&name=${encodeURIComponent(moduleName)}&examMode=${examMode}`);
   };
 
   if (loading) {
@@ -111,44 +139,69 @@ const Quiz = () => {
           </p>
         </div>
 
+        {/* Exam Mode Toggle */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => setExamMode(!examMode)}
+            className={`px-8 py-4 rounded-xl font-semibold transition-all shadow-lg transform hover:scale-105 ${
+              examMode
+                ? 'bg-red-600 text-white hover:bg-red-700'
+                : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700'
+            }`}
+          >
+            {examMode ? (
+              <span className="flex items-center gap-2">
+                🔥 Exam Mode Active
+              </span>
+            ) : (
+              'Ready to try Exam Mode?'
+            )}
+          </button>
+        </div>
+
         {/* Filter Tabs */}
-        {categories.length > 1 && (
-          <div className="flex justify-center mb-10 overflow-x-auto">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-1 flex shadow-lg">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveFilter(category)}
-                  className={`px-6 py-2 rounded-md font-medium transition whitespace-nowrap ${
-                    activeFilter === category
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+        <div className="flex justify-center mb-10">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-1 flex shadow-lg">
+            <button
+              onClick={() => setActiveFilter('current')}
+              className={`px-6 py-2 rounded-md font-medium transition whitespace-nowrap ${
+                activeFilter === 'current'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              }`}
+            >
+              {currentYearLabel}
+            </button>
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={`px-6 py-2 rounded-md font-medium transition whitespace-nowrap ${
+                activeFilter === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              }`}
+            >
+              All
+            </button>
           </div>
-        )}
+        </div>
 
         {/* No Modules Message */}
-        {filteredModules.length === 0 && (
+        {displayModules.length === 0 && (
           <div className="text-center py-12">
             <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <p className="text-gray-600 dark:text-gray-300 text-lg">
-              {activeFilter === 'All' 
+              {activeFilter === 'current' 
                 ? 'No modules found. Please select your modules in settings.'
-                : `No modules found in ${activeFilter} category.`}
+                : 'No modules available.'}
             </p>
           </div>
         )}
 
         {/* Quiz Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredModules.map((module) => {
+          {displayModules.map((module) => {
             const categoryColors = getCategoryColors(module.category || 'General');
             const statusColors = getStatusColors(module.quizStatus || 'available');
             const statusText = module.quizStatus === 'in_progress' ? 'In Progress' 
@@ -157,7 +210,7 @@ const Quiz = () => {
 
             return (
               <div
-                key={module._id}
+                key={module._id || module.id}
                 className="bg-white dark:bg-gray-800 backdrop-blur-xl rounded-2xl shadow-2xl p-6 hover:scale-105 transition-transform"
               >
                 <div className="flex items-center justify-between mb-4">
@@ -211,7 +264,7 @@ const Quiz = () => {
                     <span className="mr-2">{module.questionCount || 15} questions</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">{module.duration || 30} minutes</span>
+                    <span className="mr-2">{examMode ? '15' : module.duration || 30} minutes</span>
                   </div>
                   <div className="flex items-center">
                     <span className="mr-2">Passing: {module.passingScore || 70}%</span>
@@ -233,12 +286,16 @@ const Quiz = () => {
                 )}
 
                 <button
-                  onClick={() => handleQuizClick(module._id, module.name)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 rounded-xl py-2 font-semibold text-white transition"
+                  onClick={() => handleQuizClick(module._id || module.id, module.name)}
+                  className={`w-full rounded-xl py-2 font-semibold text-white transition ${
+                    examMode 
+                      ? 'bg-red-600 hover:bg-red-700' 
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
                 >
                   {module.quizStatus === 'completed' ? 'Retake Quiz' 
                     : module.quizStatus === 'in_progress' ? 'Continue Quiz' 
-                    : 'Start Quiz'}
+                    : examMode ? '🔥 Start Exam' : 'Start Quiz'}
                 </button>
               </div>
             );
