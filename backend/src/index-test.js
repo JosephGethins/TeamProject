@@ -48,7 +48,7 @@ app.listen(port, () => {
   console.log(`Health check: http://localhost:${port}/health`);
   console.log(`Test endpoint: http://localhost:${port}/test`);
   console.log('');
-  console.log('⚠️  This is a test server. To enable full functionality:');
+  console.log(' This is a test server. To enable full functionality:');
   console.log('1. Get Firebase service account credentials');
   console.log('2. Add them to .env file');
   console.log('3. Run: npm run dev');

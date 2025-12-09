@@ -27,6 +27,7 @@ export async function loadTimetable(uid) {
 
 export async function modifyTimetableItem(type, item) {
   console.log('Calling modifyTimetableItem with:', { type, item });
+  console.log('Item type field:', item.type);
   // Convert type to action for backend compatibility
   const action = type;
   const result = await authFetch('/timetable/item', { 
@@ -34,6 +35,9 @@ export async function modifyTimetableItem(type, item) {
     body: JSON.stringify({ action, item }) 
   });
   console.log('modifyTimetableItem response:', result);
+  if (result && result.items) {
+    console.log('Items from response:', result.items.map(i => ({ id: i.id, type: i.type, moduleCode: i.moduleCode })));
+  }
   return result;
 }
 

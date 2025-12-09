@@ -69,8 +69,8 @@ const Login = () => {
 
         {/* Form Card */}
         <div
-          className="rounded-3xl shadow-2xl p-8 text-white"
-          style={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(20px)' }}
+          className="rounded-3xl shadow-2xl p-8"
+          style={{ backgroundColor: 'white', backdropFilter: 'blur(20px)' }}
         >
           <div className="text-center mb-6">
             <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
@@ -96,7 +96,7 @@ const Login = () => {
                   style={{
                     backgroundColor: 'var(--input-bg)',
                     borderColor: 'var(--input-border)',
-                    color: 'var(--text-primary)',
+                    color: 'black',
                     placeholderColor: 'var(--text-secondary)'
                   }}
                   className="w-full rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -115,7 +115,7 @@ const Login = () => {
                 style={{
                   backgroundColor: 'var(--input-bg)',
                   borderColor: 'var(--input-border)',
-                  color: 'var(--text-primary)',
+                  color: 'black',
                   placeholderColor: 'var(--text-secondary)'
                 }}
                 className="w-full rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -133,7 +133,7 @@ const Login = () => {
                 style={{
                   backgroundColor: 'var(--input-bg)',
                   borderColor: 'var(--input-border)',
-                  color: 'var(--text-primary)',
+                  color: 'black',
                   placeholderColor: 'var(--text-secondary)'
                 }}
                 className="w-full rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -143,7 +143,7 @@ const Login = () => {
             {error && (
               <div
                 className="rounded-lg p-3 text-sm"
-                style={{ backgroundColor: 'var(--error-bg)', borderColor: 'var(--error-border)', color: 'var(--error-text)' }}
+                style={{ backgroundColor: '#dc2626', borderColor: '#b91c1c', color: 'white' }}
               >
                 {error}
               </div>
@@ -152,7 +152,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              style={{ background: 'var(--primary-gradient)', color: 'var(--btn-text)' }}
+              style={{ background: '#6b7280', color: 'white' }}
               className="w-full rounded-xl font-semibold py-2.5 shadow-lg transition disabled:opacity-50"
             >
               {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Create Account'}

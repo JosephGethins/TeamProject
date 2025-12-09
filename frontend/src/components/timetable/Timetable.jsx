@@ -97,7 +97,7 @@ const Timetable = ({ items = [], onChange, hourHeight = 60, locked = false, dele
         day,
         startHour: hour,
         duration: 1,
-        sessionType: 'Lecture', // default to Lecture
+        type: 'Lecture', // default to Lecture
       };
       const next = [...localItems, newItem];
       setLocalItems(next);

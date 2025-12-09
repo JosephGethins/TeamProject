@@ -110,7 +110,7 @@ const Bubble = ({
   const height = Math.max(1, (item.duration || 1)) * hourHeight - 4; // small gap
   const left = colLeft + 8; // padding inside column
   const width = Math.max(40, colWidth - 16);
-  const sessionType = item.sessionType || 'Lecture';
+  const sessionType = item.type || 'Lecture';
   const styles = typeStyles[sessionType] || typeStyles.Lecture;
 
   // Remove double-click text editing; bubbles are not directly editable
@@ -126,10 +126,10 @@ const Bubble = ({
   };
 
   const cycleType = () => {
-    const curr = item.sessionType || 'Lecture';
+    const curr = item.type || 'Lecture';
     const idx = TYPES.indexOf(curr);
     const next = TYPES[(idx + 1) % TYPES.length];
-    onUpdate && onUpdate({ ...item, sessionType: next });
+    onUpdate && onUpdate({ ...item, type: next });
   };
 
   return (

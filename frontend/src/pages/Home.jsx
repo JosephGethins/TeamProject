@@ -47,7 +47,7 @@ const Home = () => {
   const formatTime = () =>
     currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-  // Calculate classes today
+  // Calculate classes today (Lectures and Tutorials only, excluding Labs)
   const getClassesToday = () => {
     const dayOfWeek = currentTime.getDay(); // 0=Sunday, 1=Monday, etc.
     // Map to timetable day index (0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri)
@@ -56,7 +56,19 @@ const Home = () => {
     
     if (todayIndex === -1) return 0; // Weekend, no classes
     
-    return items.filter(item => item.day === todayIndex).length;
+    return items.filter(item => item.day === todayIndex && item.type !== 'Lab').length;
+  };
+
+  // Calculate labs today
+  const getLabsToday = () => {
+    const dayOfWeek = currentTime.getDay(); // 0=Sunday, 1=Monday, etc.
+    // Map to timetable day index (0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri)
+    const dayMap = { 0: -1, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: -1 }; // Weekend = -1
+    const todayIndex = dayMap[dayOfWeek];
+    
+    if (todayIndex === -1) return 0; // Weekend, no labs
+    
+    return items.filter(item => item.day === todayIndex && item.type === 'Lab').length;
   };
 
   return (
@@ -113,7 +125,7 @@ const Home = () => {
             <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{getClassesToday()}</p>
           </div>
 
-          {/* Quiz Mode */}
+          {/* Lab Mode */}
           <div 
             className="rounded-2xl p-6 border hover:scale-105 transition-all duration-300 cursor-pointer backdrop-blur-sm"
             style={{ 
@@ -123,13 +135,13 @@ const Home = () => {
             }}
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Quiz Mode</h3>
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Labs Today</h3>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                    style={{ color: 'var(--accent)' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>—</p>
+            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{getLabsToday()}</p>
           </div>
 
           {/* Your Progress */}
