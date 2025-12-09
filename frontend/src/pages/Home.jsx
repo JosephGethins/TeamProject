@@ -47,7 +47,7 @@ const Home = () => {
   const formatTime = () =>
     currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-  // Calculate classes today (Lectures and Tutorials only, excluding Labs)
+  // Calculate classes today (Lectures only)
   const getClassesToday = () => {
     const dayOfWeek = currentTime.getDay(); // 0=Sunday, 1=Monday, etc.
     // Map to timetable day index (0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri)
@@ -56,7 +56,7 @@ const Home = () => {
     
     if (todayIndex === -1) return 0; // Weekend, no classes
     
-    return items.filter(item => item.day === todayIndex && item.type !== 'Lab').length;
+    return items.filter(item => item.day === todayIndex && item.type === 'Lecture').length;
   };
 
   // Calculate labs today
@@ -69,6 +69,18 @@ const Home = () => {
     if (todayIndex === -1) return 0; // Weekend, no labs
     
     return items.filter(item => item.day === todayIndex && item.type === 'Lab').length;
+  };
+
+  // Calculate tutorials today
+  const getTutorialsToday = () => {
+    const dayOfWeek = currentTime.getDay(); // 0=Sunday, 1=Monday, etc.
+    // Map to timetable day index (0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri)
+    const dayMap = { 0: -1, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: -1 }; // Weekend = -1
+    const todayIndex = dayMap[dayOfWeek];
+    
+    if (todayIndex === -1) return 0; // Weekend, no tutorials
+    
+    return items.filter(item => item.day === todayIndex && item.type === 'Tutorial').length;
   };
 
   return (
@@ -144,7 +156,7 @@ const Home = () => {
             <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{getLabsToday()}</p>
           </div>
 
-          {/* Your Progress */}
+          {/* Tutorials Today */}
           <div 
             className="rounded-2xl p-6 border hover:scale-105 transition-all duration-300 cursor-pointer backdrop-blur-sm"
             style={{ 
@@ -154,13 +166,13 @@ const Home = () => {
             }}
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Your Progress</h3>
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Tutorials Today</h3>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                    style={{ color: 'var(--accent)' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>—</p>
+            <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{getTutorialsToday()}</p>
           </div>
         </div>
 
