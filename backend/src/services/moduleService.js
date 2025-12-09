@@ -8,10 +8,10 @@ const MODULES_BY_YEAR = {
   1: [
     { id: 'CS161', name: 'Introduction to Programming', code: 'CS161' },
     { id: 'CS162', name: 'Data Structures', code: 'CS162' },
-    { id: 'CS171', name: 'Digital Logic', code: 'CS171' },
-    { id: 'CS172', name: 'Calculus I', code: 'CS172' },
-    { id: 'MT101SC', name: 'Linear Algebra', code: 'MT101SC' },
-    { id: 'MT102SC', name: 'Technical Writing', code: 'MT102SC' },
+    { id: 'CS171', name: 'Computer Systems I', code: 'CS171' },
+    { id: 'CS172', name: 'Computer Systems II', code: 'CS172' },
+    { id: 'MT101SC', name: 'Calculus I', code: 'MT101SC' },
+    { id: 'MT102SC', name: 'Calculus II', code: 'MT102SC' },
     { id: 'MT113SC', name: 'Linear Algebra', code: 'MT113SC' },
   ],
   2: [
