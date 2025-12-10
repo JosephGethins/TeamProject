@@ -40,5 +40,4 @@ package.json
 *.sln
 *.sw?
 
-# Only thing in config folder was firebase so make folder yourself
-frontend/src/config/firebase.js 
+
