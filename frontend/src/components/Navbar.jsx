@@ -1,10 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { signOutUser } from "../utils/auth";
 
 const Navbar = () => {
   const { user, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     const result = await signOutUser();
@@ -24,12 +25,14 @@ const Navbar = () => {
           <Link to="/" className="text-xl font-bold">
             Student Quiz Helper
           </Link>
-          <Link 
-            to="/login" 
-            className="bg-white text-[var(--color-primary)] px-4 py-2 rounded hover:bg-gray-100 transition"
-          >
-            Sign In
-          </Link>
+          {location.pathname !== '/login' && (
+            <Link 
+              to="/login" 
+              className="bg-white text-[var(--color-primary)] px-4 py-2 rounded hover:bg-gray-100 transition"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </nav>
     );
