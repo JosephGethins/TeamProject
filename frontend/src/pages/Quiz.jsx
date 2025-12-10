@@ -263,9 +263,11 @@ const Quiz = () => {
                   <div className="flex items-center">
                     <span className="mr-2">{module.questionCount || 15} questions</span>
                   </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">{examMode ? '15' : module.duration || 30} minutes</span>
-                  </div>
+                  {examMode && (
+                    <div className="flex items-center">
+                      <span className="mr-2">⏱️ 15 minutes</span>
+                    </div>
+                  )}
                   <div className="flex items-center">
                     <span className="mr-2">Passing: {module.passingScore || 70}%</span>
                   </div>
