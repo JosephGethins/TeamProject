@@ -1,0 +1,198 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html[data-theme="professional"] {
+  --topbar-color: #4f86b3;
+  --topbar-gradient: linear-gradient(135deg, #517097 0%, #646c8b 50%, #2563eb 100%);
+  --page-bg-color: #f8fafc; 
+  --page-bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+  --bg-gradient-start: #f1f5f9;
+  --bg-gradient-end: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --card-bg: rgba(252, 249, 249, 0.95);
+  --card-border: rgba(30, 64, 175, 0.15);
+  --btn-text: #050000;
+  --accent: #00030c;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="professional"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="dark"] {
+  --topbar-color: #0f172a; 
+  --topbar-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+  --page-bg-color: #020617; 
+  --page-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 60%, #1e293b 100%);
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --card-bg: rgba(15, 23, 42, 0.85);
+  --card-border: rgba(59, 130, 246, 0.2);
+  --btn-text: #ffffff;
+  --accent: #60a5fa;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="dark"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="light"] {
+  --topbar-color: #acc5e9;
+  --topbar-gradient: linear-gradient(135deg, #dbeafe 0%, #6baaf1 100%);
+  --page-bg-color: #f8fafc;            
+  --page-bg-gradient: linear-gradient(135deg, #ffffff 0%, #0a2b4d 50%, #e0e7ef 100%);
+  --bg-gradient-start: #ffffff;
+  --bg-gradient-end: #e0e7ef;
+  --text-primary: #1e293b;             
+  --text-secondary: #334155;
+  --card-bg: #ffffff;                  
+  --card-border: rgba(0, 0, 0, 0.08);   
+  --btn-text: #111827;
+  --accent: #2563eb;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="light"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="pink"] {
+  --topbar-color: #ec4899;
+  --topbar-gradient: linear-gradient(135deg, #f472b6 0%, #e67e95 100%);
+  --page-bg-color: #fcd5e0;
+  --page-bg-gradient: linear-gradient(135deg, #f7ebf1 0%, #e11d48 100%);
+  --bg-gradient-start: #f5f3f4;
+  --bg-gradient-end: #e11d48;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #db2777;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="pink"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="red"] {
+  --topbar-color: #ef4444;
+  --topbar-gradient: linear-gradient(135deg, #e66767 0%, #b91c1c 100%);
+  --page-bg-color: #fee2e2; 
+  --page-bg-gradient: linear-gradient(135deg, #f0eded 0%, #f7eeee 100%);
+  --bg-gradient-start: #e4b5b5;
+  --bg-gradient-end: #b91c1c;
+  --text-primary: #111827;
+  --text-secondary: #111827;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #dc2626;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="red"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="warm"] {
+  --topbar-color: #f97316;             
+  --topbar-gradient: linear-gradient(135deg, #faa45a 0%, #e08554 100%);
+  --page-bg-color: #fff7ed;             
+  --page-bg-gradient: linear-gradient(135deg, #f8f3ed 0%, #fae8d4 50%, #fb923c 100%);
+  --bg-gradient-start: #fed7aa;
+  --bg-gradient-end: #fb923c;
+  --text-primary: #7c2d12;
+  --text-secondary: #9a3412;
+  --card-bg: rgba(255, 247, 237, 0.9);
+  --card-border: rgba(251, 146, 60, 0.3);
+  --btn-text: #ffffff;
+  --accent: #ea580c;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="warm"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="purple"] {
+  --topbar-color: #a855f7;
+  --topbar-gradient: linear-gradient(135deg, #a855f7 0%, #d3bdf5 100%);
+  --page-bg-color: #f3e8ff; 
+  --page-bg-gradient: linear-gradient(135deg, #e4ccfa 0%, #af86f1 100%);
+  --bg-gradient-start: #e6d4f7;
+  --bg-gradient-end: #c2ace6;
+  --text-primary: #1e293b;
+  --text-secondary: #111827;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #9333ea;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="purple"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="green"] {
+  --topbar-color: #22c55e;              
+  --topbar-gradient: linear-gradient(135deg, #80f0ab 0%, #15803d 100%);
+  --page-bg-color: #dcfce7;            
+  --page-bg-gradient: linear-gradient(135deg, #aabdb1 0%, #15803d 100%);
+  --bg-gradient-start: #a7f0c2;
+  --bg-gradient-end: #15803d;
+  --text-primary: #111827;
+  --text-secondary: #111827;
+  --card-bg: rgba(255,255,255,0.7);
+  --card-border: rgba(0,0,0,0.1);
+  --btn-text: #ffffff;
+  --accent: #16a34a;
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}
+
+html[data-theme="green"] body {
+  background: var(--page-bg-gradient, var(--page-bg-color));
+  background-color: var(--page-bg-color);
+  color: var(--text-primary);
+}

@@ -1,0 +1,3 @@
+FIREBASE_PROJECT_ID=Student-helper
+FIREBASE_CLIENT_EMAIL=thomasmurphy20041@outlook.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nABC123...\n-----END PRIVATE KEY-----\n"
