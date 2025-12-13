@@ -20,9 +20,11 @@ const Quiz = () => {
   const fetchModules = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // Fetch user's modules
       const userData = await getUserModules();
+      console.log('User modules response:', userData);
       let userMods = [];
       if (Array.isArray(userData)) {
         userMods = userData;
@@ -35,6 +37,7 @@ const Quiz = () => {
 
       // Fetch all available modules
       const allData = await getAllModules();
+      console.log('All modules response:', allData);
       let allMods = [];
       if (Array.isArray(allData)) {
         allMods = allData;
@@ -45,10 +48,18 @@ const Quiz = () => {
       }
       setAllModules(allMods);
       
+      if (userMods.length === 0 && allMods.length === 0) {
+        setError('No modules found. Please ensure the backend API is running and you have selected modules in your profile.');
+      }
+      
     } catch (err) {
-      setError('Failed to load modules. Please try again.');
+      const errorMessage = err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError') || err.message?.includes('fetch')
+        ? 'Failed to connect to backend API. Please ensure the backend server is running on http://localhost:4000. Start it with: cd backend && npm start'
+        : `Failed to load modules: ${err.message || 'Unknown error'}`;
+      setError(errorMessage);
       console.error('Error fetching modules:', err);
     } finally {
+      // Always set loading to false, whether success or error
       setLoading(false);
     }
   };

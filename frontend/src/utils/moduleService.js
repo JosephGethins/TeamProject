@@ -8,12 +8,32 @@ async function authFetch(path, options = {}) {
   const headers = options.headers || {};
   if (token) headers['Authorization'] = `Bearer ${token}`;
   headers['Content-Type'] = 'application/json';
-  const res = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Request failed: ${res.status} ${text}`);
+  
+  // Add timeout to prevent hanging requests
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const res = await fetch(`${API_BASE_URL}${path}`, { 
+      ...options, 
+      headers,
+      signal: controller.signal 
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Request failed: ${res.status} ${text}`);
+    }
+    return res.json().catch(() => null);
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timeout: The server took too long to respond. Please check if the backend is running.');
+    }
+    throw err;
   }
-  return res.json().catch(() => null);
 }
 
 export async function getModulesByYear(year) {

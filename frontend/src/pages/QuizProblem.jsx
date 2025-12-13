@@ -25,7 +25,12 @@ const QuizProblem = () => {
   const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes in seconds
 
   useEffect(() => {
-    fetchQuestions();
+    if (moduleName) {
+      fetchQuestions();
+    } else {
+      setError('Module name is missing. Please go back and select a module.');
+      setLoading(false);
+    }
   }, [moduleName]);
 
   useEffect(() => {
@@ -47,6 +52,14 @@ const QuizProblem = () => {
   const fetchQuestions = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      if (!moduleName) {
+        setError('Module name is missing.');
+        setLoading(false);
+        return;
+      }
+      
       const questionsRef = collection(db, 'questions');
       const q = query(questionsRef, where('module', '==', moduleName));
       const snapshot = await getDocs(q);
@@ -56,8 +69,10 @@ const QuizProblem = () => {
         ...doc.data()
       }));
 
+      console.log(`Found ${fetchedQuestions.length} questions for module: ${moduleName}`);
+
       if (fetchedQuestions.length === 0) {
-        setError('No questions found for this module.');
+        setError(`No questions found for "${moduleName}". Please add questions to this module in the Question Bank.`);
         setLoading(false);
         return;
       }
@@ -68,7 +83,7 @@ const QuizProblem = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching questions:', err);
-      setError('Failed to load questions. Please try again.');
+      setError(`Failed to load questions: ${err.message || 'Unknown error'}. Please try again.`);
       setLoading(false);
     }
   };
